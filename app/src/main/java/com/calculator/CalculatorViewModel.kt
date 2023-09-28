@@ -55,7 +55,7 @@ class CalculatorViewModel: ViewModel() {
 
     private fun enterOperation(operation: Operation) {
         if (state.number1.isNotBlank()){
-            state = state.copy(operation = operation)
+            state = state.copy(operation = operation, expression = "")
         }
     }
 
@@ -71,9 +71,10 @@ class CalculatorViewModel: ViewModel() {
                 null -> return
             }
             state = state.copy(
-                number1 = result.toString().take(15),
+                number1 = result.toString().take(10),
                 number2 = "",
-                operation = null
+                operation = null,
+                expression = state.number1 + " " + (state.operation?.operator ?: "") + " " + state.number2 + " ="
             )
         }
     }

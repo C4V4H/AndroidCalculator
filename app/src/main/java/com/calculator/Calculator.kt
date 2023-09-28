@@ -13,8 +13,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -38,6 +42,7 @@ import com.calculator.ui.theme.LightGray
 import com.calculator.ui.theme.MediumGray
 import com.calculator.ui.theme.Orange
 
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
 fun Calculator(
     state: State,
@@ -46,7 +51,7 @@ fun Calculator(
     onAction: (Action) -> Unit
 ) {
 
-    var textStyle1 by remember {
+    val textStyle1 by remember {
         mutableStateOf(
             TextStyle(
                 color = Color.White,
@@ -57,11 +62,11 @@ fun Calculator(
             )
         )
     }
-    var textStyle2 by remember {
+    val textStyle2 by remember {
         mutableStateOf(
             TextStyle(
                 color = Color.White,
-                fontSize = 80.sp,
+                fontSize = 60.sp,
                 fontWeight = FontWeight.Light,
                 lineHeight = 80.sp,
                 textAlign = TextAlign.End,
@@ -69,11 +74,6 @@ fun Calculator(
         )
     }
 
-    var readyToDraw1 by remember { mutableStateOf(false) }
-    var resized1 by remember { mutableStateOf(false) }
-
-    var readyToDraw2 by remember { mutableStateOf(false) }
-    var resized2 by remember { mutableStateOf(false) }
 
     Box(
         modifier = modifier,
@@ -86,68 +86,37 @@ fun Calculator(
             verticalArrangement = Arrangement.spacedBy(buttonSpacing)
         ) {
             Text(
-                text = state.number1 + (state.operation?.operator ?: "") + state.number2,
+                text = state.expression,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 30.dp)
                     .height(50.dp)
-                    .drawWithContent {
-                        if (readyToDraw1) drawContent()
-                    }
-                    .horizontalScroll(rememberScrollState()),
+                    .horizontalScroll(
+                    state = rememberScrollState(),
+                    reverseScrolling = true,
+                ),
                 maxLines = 1,
                 softWrap = false,
                 style = textStyle1,
-                onTextLayout = { textLayoutResult1 ->
-                    if (textLayoutResult1.didOverflowWidth) {
-                        textStyle1 = textStyle1.copy(fontSize = textStyle1.fontSize * 0.9)
-                        resized1 = false
-                    } else {
-                        readyToDraw1 = true
-                        if (resized1) {
-                            textStyle1 = if (textStyle1.fontSize < 40.sp)
-                                textStyle1.copy(fontSize = textStyle1.fontSize * 1.1)
-                            else
-                                textStyle1.copy(fontSize = 40.sp)
-                        }
-                        resized1 = true
-                    }
-                }
             )
 
             Text(
                 text = state.number1 + (state.operation?.operator ?: "") + state.number2,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 20.dp)
-                    .height(90.dp)
-                    .drawWithContent {
-                        if (readyToDraw2) drawContent()
-                    }
-                    .horizontalScroll(rememberScrollState(rememberScrollState().maxValue)),
+                    .padding(bottom = 30.dp)
+                    .height(80.dp)
+                .horizontalScroll(
+                    state = rememberScrollState(),
+                    reverseScrolling = true,
+                ),
                 maxLines = 1,
                 softWrap = false,
                 style = textStyle2,
-                onTextLayout = { textLayoutResult2 ->
-                    if (textLayoutResult2.didOverflowWidth) {
-                        //textStyle2 = textStyle2.copy(fontSize = textStyle2.fontSize * 0.9)
-                        resized2 = false
-                    } else {
-                        readyToDraw2 = true
-                        if (resized2) {
-                            textStyle2 = if (textStyle2.fontSize < 80.sp)
-                                if (textStyle2.fontSize > 10.sp)
-                                    textStyle2.copy(fontSize = textStyle2.fontSize * 1.1)
-                                else
-                                    textStyle2.copy(fontSize = 10.sp)
-                            else
-                                textStyle2.copy(fontSize = 80.sp)
-
-                        }
-                        resized2 = true
-                    }
-                }
             )
+
+
+
 
 
             Row(
