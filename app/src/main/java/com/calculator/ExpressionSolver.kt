@@ -1,14 +1,13 @@
-package org.example
+package com.calculator
 
-import java.lang.Exception
 import java.security.InvalidParameterException
 import java.util.*
 
 object ExpressionSolver {
-    private var coda: Queue<Any> = LinkedList() ///.add() .size .isEmpty() .isNotEmpty() .peek() .poll()
+    private var coda: Queue<Any> = LinkedList() //.add() .size .isEmpty() .isNotEmpty() .peek() .poll()
     private var stack: Stack<Any> = Stack() //.push() .size .isEmpty .isNotEmpty() .peek() .pop()
 
-    fun solve(expression: ArrayList<Any>): Number {
+    fun solve(expression: LinkedList<Any>): Number {
         parseExpression(expression)
         while (coda.isNotEmpty()) {
             when (coda.peek()) {
@@ -37,7 +36,7 @@ object ExpressionSolver {
 
     }
 
-    private fun parseExpression(expression: ArrayList<Any>) {
+    private fun parseExpression(expression: LinkedList<Any>) {
         coda = LinkedList()
         stack = Stack()
         for (i in expression) {
