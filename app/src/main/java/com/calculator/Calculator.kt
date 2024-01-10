@@ -35,6 +35,7 @@ import com.calculator.ui.theme.Orange
 @Composable
 fun Calculator(
     state: State,
+    expression: String,
     modifier: Modifier = Modifier,
     buttonSpacing: Dp = 8.dp,
     onAction: (Action) -> Unit
@@ -75,7 +76,7 @@ fun Calculator(
             verticalArrangement = Arrangement.spacedBy(buttonSpacing)
         ) {
             Text(
-                text = state.resultExpression.toString(),
+                text = ExpressionSolver.formatExpression(state.resultExpression.toString()),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 30.dp)
@@ -91,7 +92,7 @@ fun Calculator(
 
             Text(
                // text = state.number1 + (state.operation?.operator ?: "") + state.number2,
-                text = state.number.toString(),
+                text = ExpressionSolver.formatExpression(expression),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 30.dp)
@@ -137,11 +138,12 @@ fun Calculator(
                 ) {}
 
                 CalculartorButton(
-                    text = "/",
+                    text = "÷",
                     modifier = Modifier
                         .background(Orange)
                         .aspectRatio(1f)
                         .weight(1f),
+                    fontSize = 30.sp,
                     onClick = {
                         onAction(Action.Operation(Operation.Divide))
                     }
@@ -188,11 +190,12 @@ fun Calculator(
                 ) {}
 
                 CalculartorButton(
-                    text = "*",
+                    text = "×",
                     modifier = Modifier
                         .background(Orange)
                         .aspectRatio(1f)
                         .weight(1f),
+                    fontSize = 30.sp,
                     onClick = {
                         onAction(Action.Operation(Operation.Multiply))
                     }
@@ -243,6 +246,7 @@ fun Calculator(
                         .background(Orange)
                         .aspectRatio(1f)
                         .weight(1f),
+                    fontSize = 30.sp,
                     onClick = {
                         onAction(Action.Operation(Operation.Subtract))
                     }
@@ -260,6 +264,7 @@ fun Calculator(
                         .background(MediumGray)
                         .aspectRatio(1f)
                         .weight(1f),
+                    fontSize = 30.sp,
                     onClick = {
                         onAction(Action.Number(1))
                     }
@@ -293,6 +298,7 @@ fun Calculator(
                         .background(Orange)
                         .aspectRatio(1f)
                         .weight(1f),
+                    fontSize = 30.sp,
                     onClick = {
                         onAction(Action.Operation(Operation.Add))
                     }
@@ -332,6 +338,7 @@ fun Calculator(
                         .background(Orange)
                         .aspectRatio(1f)
                         .weight(1f),
+                    fontSize = 30.sp,
                     onClick = {
                         onAction(Action.Calculate)
                     }

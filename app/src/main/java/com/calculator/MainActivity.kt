@@ -32,8 +32,14 @@ fun GUI() {
     val viewModel = viewModel<CalculatorViewModel>()
     val buttonSpacing = 8.dp
 
+    val exp = StringBuilder("")
+    viewModel.expression.forEach {
+        exp.append("$it ")
+    }
+
     Calculator(
         state = viewModel.state,
+        expression = exp.toString(),
         onAction = viewModel::onAction,
         buttonSpacing = buttonSpacing,
         modifier = Modifier

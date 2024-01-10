@@ -6,8 +6,7 @@ import java.util.LinkedList
 data class State(
     var number: String = "",
     var operation: Operation? = null,
-    val resultExpression: StringBuilder = StringBuilder(""),
-    val expression: LinkedList<Any> = LinkedList<Any>()
+    val resultExpression: StringBuilder = StringBuilder("")
 )
 
 

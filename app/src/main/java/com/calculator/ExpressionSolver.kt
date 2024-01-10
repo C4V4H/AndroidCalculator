@@ -76,4 +76,8 @@ object ExpressionSolver {
             }
         }
     }
+
+    fun formatExpression(expression: String): String {
+        return expression.replace("/", "÷").replace("*", "×")
+    }
 }

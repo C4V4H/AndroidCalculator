@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace = "com.calculator"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.calculator"
@@ -71,4 +71,6 @@ dependencies {
 
     // Compose dependencies
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
+
+    implementation("androidx.compose.material:material-icons-extended-desktop:1.6.0-beta03")
 }

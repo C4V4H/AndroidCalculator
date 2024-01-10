@@ -1,28 +1,33 @@
 package com.calculator
 
+import android.annotation.SuppressLint
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import java.util.LinkedList
 import kotlin.text.StringBuilder
 
+@SuppressLint("MutableCollectionMutableState")
 class CalculatorViewModel : ViewModel() {
 
     var state by mutableStateOf(State())
         private set
 
+    var expression by mutableStateOf(LinkedList<Any>())
+
     private var canCalculate: Boolean = false
 
     fun onAction(action: Action) {
-        print(
+        /*print(
             """
-            expression: ${state.expression},
+            expression: ${expression},
             number: ${state.number},
             resultExpression: ${state.resultExpression},
             operation: ${state.operation}
         """.trimIndent()
-        )
+        )*/
         when (action) {
             is Action.Number -> enterNumber(action.number)
             is Action.Decimal -> enterDecimal()
@@ -42,7 +47,15 @@ class CalculatorViewModel : ViewModel() {
             number = state.number + number
         )
 
-        if (state.expression.size > 1)
+        if (expression.lastIndex != -1)
+            if (expression[expression.lastIndex] !is Number)
+                expression.add(number)
+            else
+                expression[expression.lastIndex] = (expression[expression.lastIndex].toString() + number).toInt()
+        else
+            expression.add(number)
+
+        if (expression.size > 1)
             canCalculate = true
 
         return
@@ -96,22 +109,18 @@ class CalculatorViewModel : ViewModel() {
     private fun enterOperation(operation: Operation) {
         val number = state.number.toDoubleOrNull()
         if (state.number.isNotBlank() && number != null) {
-            val exp = state.expression
-            exp.add(number)
-            exp.add(operation.operator[0])
+
+            if (expression[expression.lastIndex] !is Number)
+                expression[expression.lastIndex] = operation.operator[0]
+            else
+                expression.add(operation.operator[0])
+
             state = state.copy(
                 number = "",
                 operation = operation,
-                resultExpression = StringBuilder(""),
-                expression = exp
+                resultExpression = StringBuilder("")
             )
-            /*state.operation = operation
-            state.resultExpression.delete(0, state.resultExpression.length)
-            state.expression.add(number)
-            state.number.delete(0, state.number.length)
-            state.expression.add(operation.operator)
 
-            state = state.copy()*/
             canCalculate = false
         }
     }
@@ -125,11 +134,11 @@ class CalculatorViewModel : ViewModel() {
     private fun performCalculation() {
         val num = state.number.toDoubleOrNull()
         if (num != null) {
-            val result = ExpressionSolver.solve(state.expression)
+            val result = ExpressionSolver.solve(expression)
 
             val resExp = StringBuilder("")
 
-            state.expression.forEach {
+            expression.forEach {
                 resExp.append("$it ")
             }
             resExp.append(" =")
@@ -139,6 +148,9 @@ class CalculatorViewModel : ViewModel() {
                 operation = null,
                 resultExpression = resExp
             )
+
+            expression = LinkedList<Any>()
+            expression.add(result)
         }
     }
 
@@ -164,14 +176,15 @@ class CalculatorViewModel : ViewModel() {
 //    }
 
     private fun performDeletion() {
-        val num = state.number
-
-        when {
-            num.isNotBlank() -> state = state.copy(
+        if (expression[expression.lastIndex] is Number) {
+            expression[expression.lastIndex] =
+                expression[expression.lastIndex].toString().dropLast(1)
+            state = state.copy(
                 number = state.number.dropLast(1)
             )
-
-            state.operation != null -> state = state.copy(
+        } else {
+            expression.dropLast(1)
+            state = state.copy(
                 operation = null
             )
         }
@@ -211,7 +224,6 @@ class CalculatorViewModel : ViewModel() {
             is Action.Delete -> performDeletion()
         }
     }
-
 
 
 
